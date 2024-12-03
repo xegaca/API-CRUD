@@ -8,6 +8,11 @@ data_routes = Blueprint("data_routes", __name__)
 @data_routes.route("/data", methods=["POST"])
 def insert_data():
     data = request.json  # Assuming JSON data is sent for insertion
+
+    # Validación: Verificar si 'name' está presente y no vacío
+    if not data.get("name"):
+        return jsonify({"message": "Name is required"}), 400
+
     new_data = Data(name=data.get("name"))
 
     current_data = Data.query.filter_by(name=data.get("name")).first()
@@ -16,7 +21,7 @@ def insert_data():
 
     db.session.add(new_data)
     db.session.commit()
-    return jsonify({"message": "Data inserted successfully"})
+    return jsonify({"message": "Data inserted successfully"}), 201
 
 
 @data_routes.route("/data", methods=["GET"])

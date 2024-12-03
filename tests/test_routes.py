@@ -25,13 +25,25 @@ def client(app):
 # Pruebas para la ruta POST /data
 def test_insert_data(client):
     response = client.post("/data", json={"name": "Test Name"})
-    assert response.status_code == 200
+    assert response.status_code == 201
     assert response.json == {"message": "Data inserted successfully"}
 
     # Intentar insertar un duplicado
     response_duplicate = client.post("/data", json={"name": "Test Name"})
     assert response_duplicate.status_code == 409
     assert response_duplicate.json == {"message": "Data already exists"}
+
+
+# Prueba para la ruta POST /data con datos inválidos
+def test_insert_data_invalid(client):
+    response = client.post("/data", json={})  # Enviar un cuerpo vacío
+    assert response.status_code == 400
+    assert response.json == {"message": "Name is required"}
+
+    # También podrías probar con un campo 'name' vacío
+    response_empty = client.post("/data", json={"name": ""})
+    assert response_empty.status_code == 400
+    assert response_empty.json == {"message": "Name is required"}
 
 
 # Pruebas para la ruta GET /data

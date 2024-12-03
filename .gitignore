@@ -141,3 +141,8 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,pycharm
+
+.coverage
+app/__pycache__/
+instance/
+tests/__pycache__/
