@@ -1,7 +1,7 @@
 import os
 
 from app import create_app
-from app.config import config_dict
+# from app.config import config_dict
 
 
 env_name = os.getenv("FLASK_ENV", "development")
