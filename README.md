@@ -52,6 +52,7 @@ Este es un proyecto de una API RESTful construida con Flask, que permite realiza
 
     ```bash
     set PYTHONPATH=%CD%  
+    $env:PYTHONPATH = (Get-Location).Path
     ```
 
 5.	Ejecutar la API:
