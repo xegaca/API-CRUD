@@ -64,7 +64,7 @@ pipeline {
             steps {
                 script {
                     // Construye la imagen Docker
-                    sh 'docker build -t ${DOCKER_IMAGE}:${env.BUILD_ID} .'
+                    sh 'docker build -t ${env.DOCKER_IMAGE}:${env.BUILD_ID} .'
                 }
             }
         }
