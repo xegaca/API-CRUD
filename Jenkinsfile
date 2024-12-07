@@ -77,7 +77,7 @@ pipeline {
                     // Inicia sesión en Docker Hub
                     docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
                         // Subir la imagen Docker
-                        sh 'docker push ${DOCKER_IMAGE}:${env.BUILD_ID}'
+                        sh 'docker push ${DOCKER_IMAGE}:${BUILD_ID}'
                     }
                 }
             }
