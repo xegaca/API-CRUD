@@ -2,6 +2,7 @@ import pytest
 from app import create_app, db
 from app.models import Data
 
+
 # Configuración inicial para pruebas
 @pytest.fixture
 def app():
@@ -69,7 +70,9 @@ def test_delete_data(client):
 
     # Verificar que el dato ya no existe
     response_after_delete = client.get("/data")
-    assert not any(item["id"] == data_id for item in response_after_delete.json)
+    assert not any(
+        item["id"] == data_id for item in response_after_delete.json
+        )
 
     # Intentar eliminar un dato inexistente
     response_delete_missing = client.delete(f"/data/{data_id}")
