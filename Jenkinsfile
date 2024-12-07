@@ -1,7 +1,8 @@
 pipeline {
     agent any
     environment {
-        DOCKER_IMAGE = 'xegaca/api-crud-img' 
+        DOCKER_IMAGE = 'xegaca/api-crud-img'
+        DOCKERHUB_CREDENTIALS = credentials('xegaca-dockerhub') 
     }
     stages {
         stage('Preparar Entorno') {
@@ -64,9 +65,8 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    #!/bin/bash
-                    echo "Building Docker image..."
-                    docker build -t ${DOCKER_IMAGE}:${BUILD_ID} .
+                    echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
+                    docker push ${DOCKER_IMAGE}:${BUILD_ID}
                     '''
                 }
             }
@@ -74,9 +74,11 @@ pipeline {
         stage('Subir Imagen a Docker Registry') {
             steps {
                 script {
-                    // Inicia sesión en Docker Hub
-                    docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-                        // Subir la imagen Docker
+                    sh '''
+                    #!/bin/bash
+                    echo "Building Docker image..."
+                    docker build -t ${DOCKER_IMAGE}:${BUILD_ID} .
+                    '''
                         sh 'docker push ${DOCKER_IMAGE}:${BUILD_ID}'
                     }
                 }
