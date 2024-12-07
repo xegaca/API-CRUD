@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        DOCKER_IMAGE = 'xegaca/API-CRUD-IMG' 
+        DOCKER_IMAGE = 'xegaca/api-crud-img' 
     }
     stages {
         stage('Preparar Entorno') {
