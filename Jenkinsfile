@@ -65,8 +65,9 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
-                    docker push ${DOCKER_IMAGE}:${BUILD_ID}
+                    #!/bin/bash
+                    echo "Building Docker image..."
+                    docker build -t ${DOCKER_IMAGE}:${BUILD_ID} .
                     '''
                 }
             }
@@ -75,11 +76,9 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    #!/bin/bash
-                    echo "Building Docker image..."
-                    docker build -t ${DOCKER_IMAGE}:${BUILD_ID} .
+                    echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
+                    docker push ${DOCKER_IMAGE}:${BUILD_ID}
                     '''
-                        sh 'docker push ${DOCKER_IMAGE}:${BUILD_ID}'
                     }
                 }
             }
@@ -87,6 +86,7 @@ pipeline {
     }
     post {
         always {
+            sh 'Docker logout'
             echo "Pipeline finalizado."
         }
         success {
