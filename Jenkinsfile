@@ -4,6 +4,19 @@ pipeline {
         DOCKER_IMAGE = 'xegaca/API-CRUD-IMG' 
     }
     stages {
+        stage('Preparar Entorno') {
+            steps {
+                sh '''
+                apt-get update
+                apt-get install -y python3 python3-pip
+                '''
+            }
+        }
+        stage('Instalar dependencias') {
+            steps {
+                sh 'pip3 install --no-cache-dir -r requirements.txt'
+            }
+        }
         stage('Clonar código fuente') {
             steps {
                 // Clona el repositorio desde GitHub
