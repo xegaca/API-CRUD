@@ -63,11 +63,11 @@ pipeline {
         stage('Construir Imagen Docker') {
             steps {
                 script {
-                    // Construye la imagen Docker
-                    sh 'docker build -t ${env.DOCKER_IMAGE}:${env.BUILD_ID} .'
+                    echo "DOCKER_IMAGE=${DOCKER_IMAGE}"
+                    echo "BUILD_ID=${env.BUILD_ID}"
                 }
+                sh "docker build -t ${DOCKER_IMAGE}:${env.BUILD_ID} ."
             }
-        }
         stage('Subir Imagen a Docker Registry') {
             when {
                 branch 'main'
