@@ -26,6 +26,9 @@ pipeline {
         stage('Ejecutar Tests') {
             steps {
                 script {
+                    // Ajusta PYTHONPATH
+                    sh 'export PYTHONPATH=$(pwd)/app'
+
                     // Ejecuta pytest con cobertura
                     def coverageOutput = sh(script: 'pytest --cov=app --cov-report=term-missing', returnStdout: true).trim()
                     echo coverageOutput
