@@ -72,9 +72,6 @@ pipeline {
             }
         }
         stage('Subir Imagen a Docker Registry') {
-            when {
-                branch 'main'
-            }
             steps {
                 script {
                     // Inicia sesión en Docker Hub
