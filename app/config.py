@@ -24,8 +24,8 @@ class ProductionConfig(Config):
 class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.environ.get(
-    "TEST_DATABASE_URI", "sqlite:///test.db"  # Usar SQLite para pruebas
-    )  
+        "TEST_DATABASE_URI", "sqlite:///test.db"  # Usar SQLite para pruebas
+        )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
