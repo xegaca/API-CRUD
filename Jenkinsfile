@@ -78,9 +78,22 @@ pipeline {
                     docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
                         // Subir la imagen Docker
                         sh 'docker push ${DOCKER_IMAGE}:${env.BUILD_ID}'
+                        }
                     }
                 }
             }
         }
+        post {
+            always {
+                echo "Pipeline finalizado."
+            }
+            success {
+                echo "Pipeline completado con éxito."
+            }
+            failure {
+                echo "Pipeline falló. Revisa los logs para más detalles."
+            }
+        }
     }
 }
+
