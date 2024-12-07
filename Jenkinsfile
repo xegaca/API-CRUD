@@ -23,14 +23,6 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/xegaca/API-CRUD.git' 
             }
         }
-        stage('Instalar dependencias') {
-            steps {
-                script {
-                    // Instala las dependencias usando pip
-                    sh 'pip install --no-cache-dir -r requirements.txt'
-                }
-            }
-        }
         stage('Ejecutar Tests') {
             steps {
                 script {
