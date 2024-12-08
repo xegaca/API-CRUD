@@ -52,9 +52,10 @@ Este proyecto implementa una infraestructura en AWS utilizando Terraform. La inf
 
 1.	Clonar el repositorio:
 
+```bash
 git clone https://github.com/xegaca/API-CRUD.git
 cd API-CURL/terraform
-
+```
 
 2.	Inicializar Terraform:
 

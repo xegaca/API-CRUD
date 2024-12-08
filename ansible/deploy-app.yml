@@ -1,0 +1,68 @@
+---
+- name: Deploy Flask Application on ECS
+  hosts: localhost
+  gather_facts: no
+  vars:
+    ecs_cluster_name: "my-cluster"
+    ecs_service_name: "my-ecs-service"
+    container_name: "my-container"
+    docker_image: "xegaca/api-crud-img"
+    docker_image_version: "{{ version }}"  # Parámetro dinámico
+    aws_region: "us-east-1"
+
+  tasks:
+    - name: Register the new task definition
+      amazon.aws.ecs_taskdefinition:
+        family: "my-task-definition"
+        container_definitions:
+          - name: "{{ container_name }}"
+            image: "{{ docker_image }}:{{ docker_image_version }}"
+            memory: 512
+            cpu: 256
+            essential: true
+            portMappings:
+              - containerPort: 5000
+                hostPort: 5000
+        network_mode: "awsvpc"
+        requires_compatibilities: ["FARGATE"]
+        execution_role_arn: "ecs_execution_role_arn"  # Cambiar por el ARN correspondiente
+        task_role_arn: "ecs_task_role_arn"            # Cambiar por el ARN correspondiente
+      register: new_task
+
+    - name: Update the ECS service with the new task definition
+      amazon.aws.ecs_service:
+        cluster: "{{ ecs_cluster_name }}"
+        service: "{{ ecs_service_name }}"
+        task_definition: "{{ new_task.taskdefinition_arn }}"
+        desired_count: 1
+        deployment_configuration:
+          maximum_percent: 200
+          minimum_healthy_percent: 100
+        wait_for_inactive_services: true
+        region: "{{ aws_region }}"
+
+    - name: Validate the new deployment
+      amazon.aws.ecs_service_info:
+        cluster: "{{ ecs_cluster_name }}"
+        services:
+          - "{{ ecs_service_name }}"
+      register: service_info
+
+    - name: Rollback on failure
+      block:
+        - name: Check if the service is stable
+          fail:
+            msg: "Deployment failed! Rolling back."
+          when: service_info.services[0].deployments | length > 1
+      rescue:
+        - name: Revert to the previous task definition
+          amazon.aws.ecs_service:
+            cluster: "{{ ecs_cluster_name }}"
+            service: "{{ ecs_service_name }}"
+            task_definition: "{{ service_info.services[0].deployments[-1].taskDefinition }}"
+            desired_count: 1
+            region: "{{ aws_region }}"
+
+    - name: Output the deployed task definition
+      debug:
+        msg: "Deployment successful! New task definition: {{ new_task.taskdefinition_arn }}"
